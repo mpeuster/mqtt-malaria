@@ -79,10 +79,10 @@ class TrackingSender():
         handle = self.msg_statuses.get(mid, None)
         if not handle:  # Hotfix: Only re-try once
             self.log.warn("Received a publish for mid: %d before we saved its creation", mid)
-            time.sleep(0.5)
+            time.sleep(1.0)
             handle = self.msg_statuses.get(mid, None)
         if handle:
-            self.log.warn("Skipping receive.")
+            #self.log.warn("Skipping receive.")
             handle.receive()
 
     def run(self, msg_generator, qos=1):
