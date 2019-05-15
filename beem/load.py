@@ -77,11 +77,13 @@ class TrackingSender():
     def publish_handler(self, mosq, userdata, mid):
         self.log.debug("Received confirmation of mid %d", mid)
         handle = self.msg_statuses.get(mid, None)
-        while not handle:
+        if not handle:  # Hotfix: Only re-try once
             self.log.warn("Received a publish for mid: %d before we saved its creation", mid)
             time.sleep(0.5)
             handle = self.msg_statuses.get(mid, None)
-        handle.receive()
+        if handle:
+            self.log.warn("Skipping receive.")
+            handle.receive()
 
     def run(self, msg_generator, qos=1):
         """
